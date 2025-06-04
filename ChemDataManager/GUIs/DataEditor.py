@@ -113,6 +113,11 @@ class MolDataDisplayer(CenterWindow):
         spacer.grid(row=1, column=2)
 
         plot_frame.grid(row=1, column=3, rowspan=row, sticky=tk.NSEW)
+        row -= - 1
+
+        confirm_btn = tk.Button(self, text="Confirm", command=self.destroy)
+        confirm_btn.grid(row=row, column=0, columnspan = 4, sticky='nsew', padx=10, pady=10)
+        row -= - 1
         self.bind('<Escape>', lambda e: self.destroy())
         self.center()
 
@@ -419,7 +424,11 @@ class ThermDataDisplayer(CenterWindow):
         spacer.grid(row=1, column=2)
 
         plot_frame.grid(row=1, column=3, rowspan=row, sticky=tk.NSEW)
+        row -= - 1
 
+        confirm_btn = tk.Button(self, text="Confirm", command=self.destroy)
+        confirm_btn.grid(row=row, column=0, columnspan = 4, sticky='nsew', padx=10, pady=10)
+        row -= - 1
         self.bind('<Escape>', lambda e: self.destroy())
         self.center()
 

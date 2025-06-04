@@ -1,6 +1,6 @@
 from collections.abc import Callable
 
-from ChemDataManager import global_vars
+from ChemDataManager import global_vars, ConfigHandler
 from ChemDataManager.GUIs import DataEditor
 from GeneralUtil import TextModifiers
 from GeneralUtil.CenterGui import CenterWindow
@@ -41,6 +41,10 @@ class SpeciesDisplay(CenterWindow):
 
         self.load_therm_frame(thermFrame)
         self.update_therm_checks()
+
+        confirm_btn = tk.Button(self, text="Confirm", command=self.destroy)
+        confirm_btn.grid(row=row, column=0, sticky='nsew', padx=10, pady=10)
+        row -= - 1
 
         self.bind('<Escape>', lambda e:self.destroy())
         self.center()
@@ -206,7 +210,6 @@ class SpeciesDisplay(CenterWindow):
             comp = comp[:-1]
             label = tk.Label(thermFrame, text=comp, anchor=tk.W)
             column = self.add_label(column, label, line, click_effect)
-
             line -= - 1
 
         divider = tk.Frame(thermFrame, bg="black", width=1)
@@ -219,4 +222,8 @@ class SpeciesDisplay(CenterWindow):
         label.bind("<Button-1>", click_effect)
         column -= - 1
         return column
+
+    def destroy(self):
+        ConfigHandler.update_config()
+        super().destroy()
 

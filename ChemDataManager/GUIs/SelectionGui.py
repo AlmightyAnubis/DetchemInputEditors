@@ -3,8 +3,10 @@ import os
 import tkinter as tk
 from tkinter import messagebox, filedialog
 
-from ChemDataManager import global_vars, ReadData, SourceFormat, ReadExternalFile
-from ChemDataManager.GUIs import SourceEditor
+from ChemDataManager import ConfigHandler
+
+from ChemDataManager import global_vars, ReadData, SourceFormat, ReadExternalFile, GithubHandler
+from ChemDataManager.GUIs import SourceEditor, CommitGui
 from ChemDataManager.GUIs.SourceDataDisplayer import SourceDisplay
 from ChemDataManager.GUIs.SourceEditor import SourceDataDisplayer
 from ChemDataManager.GUIs.SpeciesDataDisplayer import SpeciesDisplay
@@ -19,16 +21,18 @@ class ListGui(CenterRootWindow):
 
     def __init__(self, parent):
         super().__init__(parent)
+
         self.grid_columnconfigure(4,weight=1)
+        self.grid_rowconfigure(2,weight=1)
         title = tk.Label(self, text="Chemical Data Manager", font=("Arial", 20))
-        title.grid(row=0, column=0, columnspan = 6, sticky=tk.NSEW, padx=5, pady=5)
+        title.grid(row=0, column=0, columnspan = 7, sticky=tk.NSEW, padx=5, pady=5)
 
         self.filter_var = tk.StringVar()
         searchbar = tk.Entry(self, textvariable=self.filter_var, font=("Arial", 16))
         self.filter_var.trace("w",lambda a,b,c: self.update_selection())
-        searchbar.grid(row=1, column=0, columnspan = 4, sticky=tk.NSEW, padx=5, pady=5)
+        searchbar.grid(row=1, column=0, columnspan = 5, sticky=tk.NSEW, padx=5, pady=5)
         info_box = tk.Label(self, text="Use \"*:\" to use fuzzy search", font=("Arial", 16))
-        info_box.grid(row=1, column=4, columnspan = 2, sticky=tk.NSEW, padx=5, pady=5)
+        info_box.grid(row=1, column=5, columnspan = 2, sticky=tk.NSEW, padx=5, pady=5)
 
         data = ReadData.readChemData()
         lib_data = ReadData.readLibData()
@@ -38,19 +42,36 @@ class ListGui(CenterRootWindow):
         global_vars.selected_data = {}
         for spec, info in data.items():
             global_vars.selected_data[spec] = (None, None)
+
+        try:
+            ConfigHandler.load_config()
+        except Exception as e:
+            print(e)
+
         self.load_element_display()
 
-        export_button = tk.Button(self,text="Import File", font=("Arial", 12), command=lambda :self.import_file())
-        export_button.grid(row=3, column=0, sticky=tk.NW, padx=5, pady=5)
+        export_button = tk.Button(self,text="Import Simulation File", font=("Arial", 12), command=lambda :self.import_file())
+        export_button.grid(row=3, column=0, sticky=tk.EW, padx=5, pady=5)
         export_button = tk.Button(self,text="Export Simulation Files", font=("Arial", 12), command=lambda :self.export_file())
-        export_button.grid(row=3, column=1, sticky=tk.NW, padx=5, pady=5)
-        upload_button = tk.Button(self,text="Save Locally", font=("Arial", 12), command=lambda :self.save_locally())
-        upload_button.grid(row=3, column=2, sticky=tk.NW, padx=5, pady=5)
-        upload_button = tk.Button(self,text="Upload Changes", font=("Arial", 12), command=lambda :messagebox.showinfo("WIP", "This feature is not implemented yet."))
-        upload_button.grid(row=3, column=3, sticky=tk.NW, padx=5, pady=5)
+        export_button.grid(row=3, column=1, sticky=tk.EW, padx=5, pady=5)
+        upload_button = tk.Button(self,text="Save Changes Locally", font=("Arial", 12), command=lambda :self.save_locally())
+        upload_button.grid(row=3, column=2, sticky=tk.EW, padx=5, pady=5)
+        upload_button = tk.Button(self,text="Upload Changes", font=("Arial", 12), command=lambda :self.save_online())
+        upload_button.grid(row=3, column=3, sticky=tk.EW, padx=5, pady=5)
 
+        def clear_selection():
+            answer = messagebox.askokcancel("Clear Data","Are you sure you want to clear the entire selection?")
+            if answer!=tk.YES:
+                return
+            for spec in global_vars.selected_data.keys():
+                global_vars.selected_data[spec] = (None, None)
+            ConfigHandler.update_config()
+            self.update_selection()
+
+        clear_button = tk.Button(self,text="Clear Selection", font=("Arial", 12), width=10, command=clear_selection)
+        clear_button.grid(row=3, column=5, sticky=tk.EW, padx=5, pady=5)
         close_button = tk.Button(self,text="Close", font=("Arial", 12), width=10, command=lambda :self.destroy())
-        close_button.grid(row=3, column=5, sticky=tk.NSEW, padx=5, pady=5)
+        close_button.grid(row=3, column=6, sticky=tk.EW, padx=5, pady=5)
 
         self.center()
 
@@ -74,7 +95,7 @@ class ListGui(CenterRootWindow):
         self.box.bind('<Return>', lambda event: self.open_data())
         self.box.bind('<Double-1>', lambda event: self.open_data())
         self.box.bind('<FocusIn>', self.focus_selection)
-        self.box.grid(row=2, column=0, columnspan=6, sticky=tk.NSEW, padx=10)
+        self.box.grid(row=2, column=0, columnspan=7, sticky=tk.NSEW, padx=10)
         self.update_selection()
 
 
@@ -113,6 +134,9 @@ class ListGui(CenterRootWindow):
     def save_locally(self):
         ReadData.writeChemData(global_vars.chemData)
         ReadData.writeLibData(global_vars.libData)
+
+    def save_online(self):
+        CommitGui.CommitHandler(self).show()
 
     def open_data(self):
         selected = self.box.curselection()[0]
@@ -171,6 +195,10 @@ class ListGui(CenterRootWindow):
     def show(self):
         self.wm_deiconify()
         self.wait_window()
+
+    def destroy(self):
+        super().destroy()
+        ConfigHandler.update_config()
 
 
 
