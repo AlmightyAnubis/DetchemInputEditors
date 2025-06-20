@@ -1,16 +1,14 @@
-import math
-import os
+
 import tkinter as tk
 from tkinter import messagebox, filedialog
 
 from ChemDataManager import ConfigHandler
 
-from ChemDataManager import global_vars, ReadData, SourceFormat, ReadExternalFile, GithubHandler
-from ChemDataManager.GUIs import SourceEditor, CommitGui
+from ChemDataManager import global_vars, ReadData, ReadExternalFile
+from ChemDataManager.GUIs import CommitGui
 from ChemDataManager.GUIs.SourceDataDisplayer import SourceDisplay
-from ChemDataManager.GUIs.SourceEditor import SourceDataDisplayer
 from ChemDataManager.GUIs.SpeciesDataDisplayer import SpeciesDisplay
-from GeneralUtil import TextModifiers, SelectionDialog
+from GeneralUtil import SelectionDialog
 from GeneralUtil.CenterGui import CenterRootWindow
 
 
@@ -114,10 +112,16 @@ class ListGui(CenterRootWindow):
 
         if answer == "thermdata":
             answer = ReadExternalFile.read_thermdata(dir_name,id)
+            for spec in global_vars.chemData.keys():
+                if spec not in global_vars.selected_data.keys():
+                    global_vars.selected_data[spec] = (None, None)
             if answer>=0:
                 messagebox.showinfo("Thermal Data Imported", "Thermal Data >" + dir_name + "< successfully Imported")
         if answer == "moldata":
             answer = ReadExternalFile.read_moldata(dir_name,id)
+            for spec in global_vars.chemData.keys():
+                if spec not in global_vars.selected_data.keys():
+                    global_vars.selected_data[spec] = (None, None)
             if answer >= 0:
                 messagebox.showinfo("Molecular Data Imported", "Molecular Data >" + dir_name + "< successfully Imported")
         self.load_element_display()

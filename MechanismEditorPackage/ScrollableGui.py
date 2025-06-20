@@ -300,7 +300,7 @@ class ListGui(CenterRootWindow):
         self.reaction_mapper[str(reaction_frame)] = (firstKey, j, widgets)
         self.reverse_mapper[reaction] = str(reaction_frame)
 
-        EditorGui.UniversalEditorGui(reaction).show()
+        EditorGui.UniversalEditorGui(self, reaction).show()
         self.update_data()
         self.update_search()
 

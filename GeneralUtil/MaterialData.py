@@ -4,9 +4,9 @@ from enum import Enum
 import periodictable
 
 from GeneralUtil import Errors
-from MechanismEditorPackage.adjust_util.AdjustData import AdjustDataHolder
 from GeneralUtil.Nat_Constants import R
 from GeneralUtil.algebra import EquationVariable
+from MechanismEditorPackage.adjust_util.AdjustData import AdjustDataHolder
 
 
 class State(Enum):

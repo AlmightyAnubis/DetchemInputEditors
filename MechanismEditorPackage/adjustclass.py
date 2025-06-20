@@ -94,7 +94,7 @@ class AdjustClass(object):
                     try:
                         self.cov[dep].add(spec)
                     except:
-                        self.cov[dep] = set([spec])
+                        self.cov[dep] = {spec}
                 else:
                     print("ERROR in section <COV> of adjust.inp")
                     print("section must start with a species name, not with a dependency ($)")

@@ -1,66 +1,68 @@
 from tkinter import messagebox
 
+import github
+#import gitlab
+#import github3
 from github import Github
-
-# Authentication is defined via github.Auth
 from github import Auth
 from github.ContentFile import ContentFile
+from requests import session
+
+from bs4 import BeautifulSoup as bs
+
+# Authentication is defined via github.Auth
 
 import GeneralUtil.TextModifiers
+from ChemDataManager import global_vars
 
-
+# Needs good authentication system, what is not easy to do...
 def send_pull_request(target_branch, title, body) -> int:
     # using an access token
-    file = open("ChemDataManager/ChemData.csv")
-    auth = Auth.Token("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")
-
-    # First create a Github instance:
 
     # Public Web Github
-    g = Github(auth=auth)
+    name = ""
+    pw = ""
+    #gh = github3.login(username=name, password=pw)
+    #gh.login(username=name, password=pw)
+    #user = gh.me()
+    #repos = user.repositories()
 
-    # Github Enterprise with custom hostname
-    repo = g.get_user().get_repo("DetchemInputEditors")
+    USER = name
+    PASSWORD = pw
 
-    source_branch = repo.default_branch
-    sb = repo.get_branch(source_branch)
-    branch_names = []
-    for branch in repo.get_branches():
-        branch_names.append(branch.name)
+    URL1 = 'https://github.com/session'
+
+    with session() as s:
+
+        req = s.get(URL1).text
+        html = bs(req)
+        token = html.find("input", {"name": "authenticity_token"}).attrs['value']
+        com_val = html.find("input", {"name": "commit"}).attrs['value']
+
+        login_data = {'login': USER,
+                      'password': PASSWORD,
+                      'commit': com_val,
+                      'authenticity_token': token}
+
+        r1 = s.post(URL1, data=login_data)
+        response_url = r1.url
+        cookies = r1.cookies
+        print(len(cookies))
+        session_key = ""
+        for cookie in cookies:
+            if cookie.name == "_gh_sess":
+                session_key = cookie.value
+        if session_key != "":
+            login_data.update({'session_key': session_key})
+            gh = github.Github(session_key)
+            print(gh.get_user())
+
+        r2 = s.get(response_url)
 
 
-    changes = False
-    contents: ContentFile = repo.get_contents("ChemDataManager/ChemData.csv", ref=source_branch)
+    # Not working !!
 
-    if target_branch not in branch_names:
-        repo.create_git_ref(ref='refs/heads/' + target_branch, sha=sb.commit.sha)
-
-    content = "".join(file.readlines())
-    decoded = contents.decoded_content.decode()
-    if decoded == content:
-        messagebox.showinfo("No Commit Send","Irgnored ChemData, since there was no change.")
-    else:
-        print("Commit Sent Successfully for ChemData")
-        repo.update_file("ChemDataManager/ChemData.csv","Update of ChemData.csv",content,branch=target_branch,sha=contents.sha)
-        changes = True
-    file.close()
-
-
-    file = open("ChemDataManager/Sources.csv")
-    contents: ContentFile = repo.get_contents("ChemDataManager/Sources.csv", ref=target_branch)
-
-    content = "".join(file.readlines())
-    decoded = contents.decoded_content.decode()
-    if decoded == content:
-        messagebox.showinfo("No Commit Send","Irgnored Sources, since there was no change.")
-    else:
-        print("Commit Sent Successfully for Sources")
-        repo.update_file("ChemDataManager/Sources.csv","Update of Sources.csv",content,branch=target_branch,sha=contents.sha)
-        changes = True
-    file.close()
-
-    if changes:
-        pull = repo.create_pull(base="master", head=target_branch, title=title, body=body)
-    # To close connections after use
-    g.close()
     return 0
+
+if __name__ == "__main__":
+    send_pull_request("a","b","c")

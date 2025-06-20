@@ -183,7 +183,7 @@ class UniversalEditorGui(CenterWindow):
                     sub_key = combi_key.split(":")[1]
                     sub_element = self.entry_vars[combi_key].get()
                     if callable(can_json):
-                        instanced = main_type()
+                        instanced = copy.deepcopy(main_type)
                         instanced.fromJSON(sub_element)
                         sub_element = instanced
                     value[sub_key] = sub_element
@@ -204,7 +204,7 @@ class UniversalEditorGui(CenterWindow):
                     sub_key = combi_key.split(":")[1]
                     sub_element = self.entry_vars[combi_key].get()
                     if callable(can_json):
-                        instanced = main_type()
+                        instanced = copy.deepcopy(main_type)
                         instanced.fromJSON(sub_element)
                         sub_element = instanced
                     value.append(sub_element)
@@ -243,7 +243,7 @@ class UniversalEditorGui(CenterWindow):
                             sub_key = combi_key.split(":")[1]
                             sub_element = self.entry_vars[combi_key].get()
                             if callable(can_json):
-                                instanced = main_type()
+                                instanced = copy.deepcopy(main_type)
                                 instanced.fromJSON(sub_element)
                                 sub_element = instanced
                             value[sub_key] = sub_element
@@ -264,7 +264,7 @@ class UniversalEditorGui(CenterWindow):
                             sub_key = combi_key.split(":")[1]
                             sub_element = self.entry_vars[combi_key].get()
                             if callable(can_json):
-                                instanced = main_type()
+                                instanced = copy.deepcopy(main_type)
                                 instanced.fromJSON(sub_element)
                                 sub_element = instanced
                             value.append(sub_element)

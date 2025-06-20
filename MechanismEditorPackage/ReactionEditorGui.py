@@ -15,7 +15,7 @@ class UniversalEditorGui(CenterWindow):
     reaction: Reaction_Class.Reaction
 
     def __init__(self, to_edit: Reaction_Class.Reaction):
-        super().__init__()
+        super().__init__(None)
         if not isinstance(to_edit, Interfaces.EditorAdjusted):
             raise TypeError("to_edit must inherit the type Interfaces.EditorAdjusted")
         self.entry_vars = {}
@@ -240,7 +240,7 @@ class UniversalEditorGui(CenterWindow):
                     sub_key = combi_key.split(":")[2]
                     sub_element = self.entry_vars[combi_key].get()
                     if callable(can_json):
-                        instanced = main_type()
+                        instanced = copy.deepcopy(main_type)
                         instanced.fromJSON(sub_element)
                         sub_element = instanced
                     value[sub_key] = sub_element
@@ -261,7 +261,7 @@ class UniversalEditorGui(CenterWindow):
                 for combi_key in sub_key_list:
                     sub_element = self.entry_vars[combi_key].get()
                     if callable(can_json):
-                        instanced = main_type()
+                        instanced = copy.deepcopy(main_type)
                         instanced.fromJSON(sub_element)
                         sub_element = instanced
                     value.append(sub_element)
@@ -300,7 +300,7 @@ class UniversalEditorGui(CenterWindow):
         for widget in self.winfo_children():
             widget.destroy()
         self.entry_vars.clear()
-        self.generate_fields()
+        self.generate_fields(self.reaction, self, self.reaction.no_edit(), self.reaction.no_show())
 
     def update_btn(self, key, btn):
         self.entry_vars[key].set(not self.entry_vars[key].get())

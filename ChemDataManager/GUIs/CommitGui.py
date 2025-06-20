@@ -2,8 +2,6 @@ import datetime
 import tkinter as tk
 from tkinter import messagebox
 
-from pyexpat.errors import messages
-
 from ChemDataManager import GithubHandler, global_vars, ConfigHandler
 from GeneralUtil.CenterGui import CenterWindow
 

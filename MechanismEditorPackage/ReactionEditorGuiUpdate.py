@@ -2,7 +2,7 @@ import tkinter
 from tkinter import messagebox, simpledialog
 from typing import Any
 
-from MechanismEditorPackage import Config
+from MechanismEditorPackage import Config, global_vars
 from GeneralUtil.CenterGui import CenterWindow
 from MechanismEditorPackage.Reaction_Class import Reaction
 from GeneralUtil import ThermalDataReader
@@ -192,7 +192,7 @@ class ReactionEditorGui(CenterWindow):
             if name == "":
                 return
             try:
-                ThermalDataReader.find_species(name)
+                ThermalDataReader.find_species(name, global_vars.thermalDataMap)
                 eps[name] = 0
                 for child in self.winfo_children():
                     child.destroy()
@@ -292,7 +292,7 @@ class ReactionEditorGui(CenterWindow):
             tkinter.messagebox.showerror("Error", "Name too long, max 8 characters", parent=self)
             return
         try:
-            ThermalDataReader.find_species(species_name)
+            ThermalDataReader.find_species(species_name, global_vars.thermalDataMap)
             if species_name in educts:
                 educts[species_name] += 1
             else:

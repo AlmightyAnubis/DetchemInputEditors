@@ -3,9 +3,8 @@ import random
 
 import periodictable
 
-from MechanismEditorPackage import global_vars
-from MechanismEditorPackage.adjust_util.AdjustData import AdjustDataHolder
 from GeneralUtil.MaterialData import Species, State, convert_state, reconvert_state
+from MechanismEditorPackage.adjust_util.AdjustData import AdjustDataHolder
 
 defaultMapping: dict[str,str]
 
@@ -102,7 +101,7 @@ def read_thermdata_file(file_name: str, ad_data:AdjustDataHolder = None) -> dict
                 except ValueError:
                     # Catch Double Values for example 0.10431658D+02
                     try:
-                        value = float(line[15 * i:15 * (i + 1)].replace("D", "E"))
+                        value = float(line[15 * i:15 * (i + 1)].replace("D", "E").replace("E ","E"))
                         species.add_coefficient(value)
                     except ValueError:
                         if not(i==4 and section==2):
