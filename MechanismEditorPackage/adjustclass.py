@@ -365,13 +365,10 @@ class AdjustClass(object):
                         else:
                             epsilon_f = -delta_epsilon
                 # add coverage dependency to new equations
-                # TODO Remove comment
-                # if epsilon_f:
-                #     self.old2new[freac].cov.append(mechanism.CoverageDependency
-                #                                    (spec=self.slist[cov], epsilon=epsilon_f))
-                # if epsilon_r and rreac:
-                #     self.old2new[rreac].cov.append(mechanism.CoverageDependency
-                #                                    (spec=self.slist[cov], epsilon=epsilon_r))
+                if epsilon_f:
+                    self.old2new[freac].cov.append({"spec":self.slist[cov], "epsilon":epsilon_f})
+                if epsilon_r and rreac:
+                    self.old2new[rreac].cov.append({"spec":self.slist[cov], "epsilon":epsilon_r})
 
     def adjust(self):
         self.old2new = copy.deepcopy(global_vars.reactions)

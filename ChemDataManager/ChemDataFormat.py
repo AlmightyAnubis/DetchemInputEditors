@@ -50,10 +50,11 @@ class ChemData():
 
 
 
-
     def __str__(self):
         content = str(self.ID) + ": {name:" + str(self.species) + ","
-        content += "type:" + str(self.data_type) + "}"
+        if hasattr(self, "data_type"):
+            content += "type:" + str(self.data_type)
+        content += "}"
         return content
 
 

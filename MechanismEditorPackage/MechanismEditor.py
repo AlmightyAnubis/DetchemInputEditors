@@ -190,7 +190,7 @@ for category in reactions:
 for category in reactions:
     for reaction in reactions[category]:
         if reaction.reverse_reaction is not None:
-            reaction.reverse_reaction.is_reversible = False
+            reaction.reverse_reaction.is_reversible = True
 
 gui = ScrollableGui.ListGui(A)
 gui.focus_set()
