@@ -33,7 +33,7 @@ if not os.path.isfile(inp_file_name):
     inp_file_name = os.path.join(global_vars.parent, "adjust.txt")
     if not os.path.isfile(inp_file_name):
         newData = AdjustDataHolder()
-        newData.surface_side_value["surface_name"] = Surface(surface_side_density=1.01e-09)
+        newData.surface_side_value["<surface_name>"] = Surface(surface_side_density=1.01e-09)
         newData.T_ref_value = [TemperatureRange(300,700,20)]
         newData.flag_weight_value = 1
         json_Version = newData.toJSON(True)

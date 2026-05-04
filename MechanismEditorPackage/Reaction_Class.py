@@ -124,12 +124,12 @@ class Reaction(Checkable, SelfFixing, EditorAdjusted):
         value.products = self.educts
 
 
-    def update_old_values(self):
+    def update_old_values(self, has_parent=False):
         self.old_A_k = self.A_k
         self.old_beta_k = self.beta_k
         self.old_E_k = self.E_k
-        if self.is_reversible:
-            self._reverse_reaction.update_old_values()
+        if self.is_reversible and not has_parent:
+            self._reverse_reaction.update_old_values(True)
 
     def set_adjustable(self, value):
         self.is_adjustable = value

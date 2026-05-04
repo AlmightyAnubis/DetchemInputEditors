@@ -1,3 +1,4 @@
+import copy
 import os.path
 
 from GeneralUtil import ThermalDataReader
@@ -6,7 +7,7 @@ from MechanismEditorPackage import global_vars
 
 def save_file(save_content):
     if save_content == "copy" or save_content == "overwrite":
-        lines = global_vars.file_prefix
+        lines = copy.deepcopy(global_vars.file_prefix)
         reactions = global_vars.reactions
         for category in reactions:
             lines.append("**** " + category + "\n")

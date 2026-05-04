@@ -12,15 +12,11 @@
   "surface_side_comment": "All Surface sides. The name will given, will be searched in the species to determine the surface species. If a species does not follow that convention, add it in the special_surface_species list",
   "surface_side_value": {
     "(a)": {
-      "special_surface_species": {
-        "(a)": 1
-      },
+      "special_surface_species": {},
       "surface_side_density": 3.554e-09
     },
     "(b)": {
-      "special_surface_species": {
-        "(b)": 1
-      },
+      "special_surface_species": {},
       "surface_side_density": 3.554e-09
     }
   }
